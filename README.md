@@ -25,7 +25,8 @@ implementation for more natural terrain. `--seed`, `--moisture-seed` and
 respectively. Pass `--color` to render
 ANSI-colored tiles. Use `--plot` to also save a 3D height map to `world.png`
 (requires `matplotlib`). Use `--window` to open a simple interactive 3D view
-powered by `tkinter`.
+powered by `tkinter`. The window includes scroll bars if the world is larger
+than the visible area so you can pan around the map.
 
 brightened so height differences stand out clearly. Vertical faces are drawn
 relative to neighbouring heights so outlines remain consistent even when terrain

@@ -48,11 +48,11 @@ def render_isometric(world: List[List[Tile]], color: bool = False) -> str:
     height = len(world)
     width = len(world[0]) if world else 0
     lines = []
-    for y in range(height - 1, -1, -1):
-        offset = ' ' * (y)
+    for y in range(height):
+        offset = ' ' * (height - y - 1)
         line_parts = [offset]
         for x in range(width):
-            tile = world[y][x]
+            tile = world[height - y - 1][x]
             symbols = TILE_SYMBOLS_COLOR if color else TILE_SYMBOLS
             symbol = symbols.get(tile.terrain, '? ')
             line_parts.append(symbol)
@@ -121,14 +121,38 @@ def render_3d_window(world: List[List[Tile]]) -> None:
         root = tk.Tk()
     except tk.TclError as exc:  # pragma: no cover - headless environments
         raise RuntimeError("tkinter failed to initialize") from exc
-    root.title("isoworld 3D")
-    canvas = tk.Canvas(root, width=canvas_w, height=canvas_h, bg="white")
-    canvas.pack()
 
-    def iso(x: int, y: int, z: int) -> tuple[int, int]:
+    root.title("isoworld 3D")
+
+    frame = tk.Frame(root)
+    frame.pack(fill="both", expand=True)
+
+    h_scroll = tk.Scrollbar(frame, orient="horizontal")
+    h_scroll.pack(side="bottom", fill="x")
+    v_scroll = tk.Scrollbar(frame, orient="vertical")
+    v_scroll.pack(side="right", fill="y")
+
+    window_w = min(canvas_w, 800)
+    window_h = min(canvas_h, 600)
+
+    canvas = tk.Canvas(
+        frame,
+        width=window_w,
+        height=window_h,
+        bg="white",
+        scrollregion=(0, 0, canvas_w, canvas_h),
+        xscrollcommand=h_scroll.set,
+        yscrollcommand=v_scroll.set,
+    )
+    canvas.pack(side="left", fill="both", expand=True)
+
+    h_scroll.config(command=canvas.xview)
+    v_scroll.config(command=canvas.yview)
+
+    def iso(x: int, y: int, z: int) -> tuple[float, float]:
         sx = (x - y) * tile_w + x_offset
         sy = (x + y) * tile_h * 0.5 - z * tile_d + y_offset
-        return round(sx), round(sy)
+        return sx, sy
 
     def draw_block(x: int, y: int) -> None:
         tile = world[y][x]
@@ -158,8 +182,9 @@ def render_3d_window(world: List[List[Tile]]) -> None:
 
         canvas.create_polygon(top, fill=_shade_color(color, 1.1), outline="black")
 
-    for y in range(height - 1, -1, -1):
+    coords = []
+    for y in range(height):
         for x in range(width):
-            draw_block(x, y)
+
 
     root.mainloop()
