@@ -87,15 +87,15 @@ def render_3d_plot(world: List[List[Tile]], filename: str = "world.png") -> str:
 
 
 def _shade_color(color: str, factor: float) -> str:
-    """Return a darker shade of the given hex color."""
+    """Darken or lighten a hex color by a factor."""
     if not color.startswith("#") or len(color) != 7:
         return color
     r = int(color[1:3], 16)
     g = int(color[3:5], 16)
     b = int(color[5:7], 16)
-    r = int(r * factor)
-    g = int(g * factor)
-    b = int(b * factor)
+    r = min(255, max(0, int(r * factor)))
+    g = min(255, max(0, int(g * factor)))
+    b = min(255, max(0, int(b * factor)))
     return f"#{r:02x}{g:02x}{b:02x}"
 
 
@@ -127,17 +127,17 @@ def render_3d_window(world: List[List[Tile]]) -> None:
 
     def iso(x: int, y: int, z: int) -> tuple[int, int]:
         sx = (x - y) * tile_w + x_offset
-        sy = (x + y) * tile_h // 2 - z * tile_d + y_offset
-        return sx, sy
+        sy = (x + y) * tile_h * 0.5 - z * tile_d + y_offset
+        return round(sx), round(sy)
 
     def draw_block(x: int, y: int, h: int, terrain: str) -> None:
         color = TILE_COLORS.get(terrain, "#808080")
         top = [iso(x, y, h), iso(x + 1, y, h), iso(x + 1, y + 1, h), iso(x, y + 1, h)]
         left = [iso(x, y + 1, 0), iso(x, y, 0), iso(x, y, h), iso(x, y + 1, h)]
         right = [iso(x + 1, y, 0), iso(x + 1, y + 1, 0), iso(x + 1, y + 1, h), iso(x + 1, y, h)]
-        canvas.create_polygon(right, fill=_shade_color(color, 0.7), outline="black")
-        canvas.create_polygon(left, fill=_shade_color(color, 0.85), outline="black")
-        canvas.create_polygon(top, fill=color, outline="black")
+        canvas.create_polygon(right, fill=_shade_color(color, 0.55), outline="black")
+        canvas.create_polygon(left, fill=_shade_color(color, 0.75), outline="black")
+        canvas.create_polygon(top, fill=_shade_color(color, 1.1), outline="black")
 
     for y in range(height - 1, -1, -1):
         for x in range(width):
