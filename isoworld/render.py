@@ -121,9 +121,33 @@ def render_3d_window(world: List[List[Tile]]) -> None:
         root = tk.Tk()
     except tk.TclError as exc:  # pragma: no cover - headless environments
         raise RuntimeError("tkinter failed to initialize") from exc
+
     root.title("isoworld 3D")
-    canvas = tk.Canvas(root, width=canvas_w, height=canvas_h, bg="white")
-    canvas.pack()
+
+    frame = tk.Frame(root)
+    frame.pack(fill="both", expand=True)
+
+    h_scroll = tk.Scrollbar(frame, orient="horizontal")
+    h_scroll.pack(side="bottom", fill="x")
+    v_scroll = tk.Scrollbar(frame, orient="vertical")
+    v_scroll.pack(side="right", fill="y")
+
+    window_w = min(canvas_w, 800)
+    window_h = min(canvas_h, 600)
+
+    canvas = tk.Canvas(
+        frame,
+        width=window_w,
+        height=window_h,
+        bg="white",
+        scrollregion=(0, 0, canvas_w, canvas_h),
+        xscrollcommand=h_scroll.set,
+        yscrollcommand=v_scroll.set,
+    )
+    canvas.pack(side="left", fill="both", expand=True)
+
+    h_scroll.config(command=canvas.xview)
+    v_scroll.config(command=canvas.yview)
 
     def iso(x: int, y: int, z: int) -> tuple[float, float]:
         sx = (x - y) * tile_w + x_offset
