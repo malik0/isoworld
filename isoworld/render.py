@@ -139,9 +139,14 @@ def render_3d_window(world: List[List[Tile]]) -> None:
         canvas.create_polygon(left, fill=_shade_color(color, 0.75), outline="black")
         canvas.create_polygon(top, fill=_shade_color(color, 1.1), outline="black")
 
+    coords = []
     for y in range(height):
         for x in range(width):
-            tile = world[height - y - 1][x]
-            draw_block(x, height - y - 1, tile.height, tile.terrain)
+            world_y = height - y - 1
+            coords.append((x, world_y, x + world_y))
+
+    for x, y, _ in sorted(coords, key=lambda c: c[2]):
+        tile = world[y][x]
+        draw_block(x, y, tile.height, tile.terrain)
 
     root.mainloop()
