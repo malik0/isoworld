@@ -27,3 +27,25 @@ ANSI-colored tiles. Use `--plot` to also save a 3D height map to `world.png`
 (requires `matplotlib`). Use `--window` to open a simple interactive 3D view
 powered by `tkinter`.
 
+## Example worlds
+
+A few example commands demonstrate how the generator can produce different terrain
+styles. The choice of seeds influences the result so feel free to experiment.
+
+- **Mountainous world** using the fractal algorithm
+  ```bash
+  python main.py --width 20 --height 20 --algorithm fractal --seed 42 --color
+  ```
+- **Desert world** with hot and dry conditions
+  ```bash
+  python main.py --width 20 --height 20 --seed 1 --moisture-seed 1 --temperature-seed 999 --color
+  ```
+- **Snowy tundra**
+  ```bash
+  python main.py --width 20 --height 20 --moisture-seed 5 --temperature-seed 0 --color
+  ```
+- **Dense rainforest**
+  ```bash
+  python main.py --width 20 --height 20 --seed 8 --moisture-seed 999 --temperature-seed 999 --color
+  ```
+
