@@ -125,10 +125,10 @@ def render_3d_window(world: List[List[Tile]]) -> None:
     canvas = tk.Canvas(root, width=canvas_w, height=canvas_h, bg="white")
     canvas.pack()
 
-    def iso(x: int, y: int, z: int) -> tuple[int, int]:
+    def iso(x: int, y: int, z: int) -> tuple[float, float]:
         sx = (x - y) * tile_w + x_offset
         sy = (x + y) * tile_h * 0.5 - z * tile_d + y_offset
-        return round(sx), round(sy)
+        return sx, sy
 
     def draw_block(x: int, y: int, h: int, terrain: str) -> None:
         color = TILE_COLORS.get(terrain, "#808080")
