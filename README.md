@@ -27,7 +27,4 @@ ANSI-colored tiles. Use `--plot` to also save a 3D height map to `world.png`
 (requires `matplotlib`). Use `--window` to open a simple interactive 3D view
 powered by `tkinter`.
 
-The windowed 3D renderer now rounds screen coordinates for smoother block
-placement. Side faces use stronger shading while the top face is slightly
-brightened so height differences stand out clearly.
 
