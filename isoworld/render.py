@@ -48,11 +48,11 @@ def render_isometric(world: List[List[Tile]], color: bool = False) -> str:
     height = len(world)
     width = len(world[0]) if world else 0
     lines = []
-    for y in range(height - 1, -1, -1):
-        offset = ' ' * (y)
+    for y in range(height):
+        offset = ' ' * (height - y - 1)
         line_parts = [offset]
         for x in range(width):
-            tile = world[y][x]
+            tile = world[height - y - 1][x]
             symbols = TILE_SYMBOLS_COLOR if color else TILE_SYMBOLS
             symbol = symbols.get(tile.terrain, '? ')
             line_parts.append(symbol)
@@ -139,9 +139,9 @@ def render_3d_window(world: List[List[Tile]]) -> None:
         canvas.create_polygon(left, fill=_shade_color(color, 0.75), outline="black")
         canvas.create_polygon(top, fill=_shade_color(color, 1.1), outline="black")
 
-    for y in range(height - 1, -1, -1):
+    for y in range(height):
         for x in range(width):
-            tile = world[y][x]
-            draw_block(x, y, tile.height, tile.terrain)
+            tile = world[height - y - 1][x]
+            draw_block(x, height - y - 1, tile.height, tile.terrain)
 
     root.mainloop()
