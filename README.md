@@ -27,4 +27,6 @@ ANSI-colored tiles. Use `--plot` to also save a 3D height map to `world.png`
 (requires `matplotlib`). Use `--window` to open a simple interactive 3D view
 powered by `tkinter`.
 
-
+brightened so height differences stand out clearly. Vertical faces are drawn
+relative to neighbouring heights so outlines remain consistent even when terrain
+steps sharply.
