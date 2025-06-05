@@ -185,6 +185,11 @@ def render_3d_window(world: List[List[Tile]]) -> None:
     coords = []
     for y in range(height):
         for x in range(width):
+            world_y = height - y - 1
+            coords.append((x, world_y, x + world_y))
 
+    for x, y, _ in sorted(coords, key=lambda c: c[2]):
+        tile = world[y][x]
+        draw_block(x, y)
 
     root.mainloop()
