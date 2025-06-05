@@ -154,23 +154,37 @@ def render_3d_window(world: List[List[Tile]]) -> None:
         sy = (x + y) * tile_h * 0.5 - z * tile_d + y_offset
         return sx, sy
 
-    def draw_block(x: int, y: int, h: int, terrain: str) -> None:
-        color = TILE_COLORS.get(terrain, "#808080")
+    def draw_block(x: int, y: int) -> None:
+        tile = world[y][x]
+        h = tile.height
+        color = TILE_COLORS.get(tile.terrain, "#808080")
+
+        right_h = world[y][x + 1].height if x + 1 < width else 0
+        left_h = world[y + 1][x].height if y + 1 < height else 0
+
         top = [iso(x, y, h), iso(x + 1, y, h), iso(x + 1, y + 1, h), iso(x, y + 1, h)]
-        left = [iso(x, y + 1, 0), iso(x, y, 0), iso(x, y, h), iso(x, y + 1, h)]
-        right = [iso(x + 1, y, 0), iso(x + 1, y + 1, 0), iso(x + 1, y + 1, h), iso(x + 1, y, h)]
-        canvas.create_polygon(right, fill=_shade_color(color, 0.55), outline="black")
-        canvas.create_polygon(left, fill=_shade_color(color, 0.75), outline="black")
+        if h > right_h:
+            right = [
+                iso(x + 1, y, right_h),
+                iso(x + 1, y + 1, right_h),
+                iso(x + 1, y + 1, h),
+                iso(x + 1, y, h),
+            ]
+            canvas.create_polygon(right, fill=_shade_color(color, 0.55), outline="black")
+        if h > left_h:
+            left = [
+                iso(x, y + 1, left_h),
+                iso(x, y, left_h),
+                iso(x, y, h),
+                iso(x, y + 1, h),
+            ]
+            canvas.create_polygon(left, fill=_shade_color(color, 0.75), outline="black")
+
         canvas.create_polygon(top, fill=_shade_color(color, 1.1), outline="black")
 
     coords = []
     for y in range(height):
         for x in range(width):
-            world_y = height - y - 1
-            coords.append((x, world_y, x + world_y))
 
-    for x, y, _ in sorted(coords, key=lambda c: c[2]):
-        tile = world[y][x]
-        draw_block(x, y, tile.height, tile.terrain)
 
     root.mainloop()
